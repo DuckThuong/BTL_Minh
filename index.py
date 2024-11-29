@@ -18,18 +18,23 @@ train_data['Gender'] = label_encoder.fit_transform(train_data['Gender'])
 test_data['Geography'] = label_encoder.transform(test_data['Geography'])
 test_data['Gender'] = label_encoder.transform(test_data['Gender'])
 
-X_train = train_data.drop(columns=['Exited', 'Surname', 'ID'])
-y_train = train_data['Exited']
-X_test = test_data.drop(columns=['Surname', 'ID'])
+def train_knn_model(train_data, test_data):
+    X_train = train_data.drop(columns=['Exited', 'Surname', 'ID'])
+    y_train = train_data['Exited']
+    X_test = test_data.drop(columns=['Surname', 'ID'])
 
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
 
-knn_classifier = KNeighborsClassifier(n_neighbors=5)
-knn_classifier.fit(X_train_scaled, y_train)
+    knn_classifier = KNeighborsClassifier(n_neighbors=5)
+    knn_classifier.fit(X_train_scaled, y_train)
 
-y_public_pred = knn_classifier.predict(X_test_scaled)
+    y_pred = knn_classifier.predict(X_test_scaled)
+    
+    return y_pred
+
+y_public_pred = train_knn_model(train_data, test_data)
 
 public_results = []
 for i in range(len(y_public_pred)):
@@ -46,5 +51,5 @@ public_submission_df.to_csv(r'C:\Users\ADMIN\Desktop\BTL_Minh\task.csv', index=F
 # else:
 #     print("Có lỗi xảy ra khi ghi file.")
 
-print(test_data['Gender kkkkk :'].head())
+print(y_public_pred)
 
